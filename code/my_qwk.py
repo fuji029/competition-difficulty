@@ -19,14 +19,13 @@ def get_gold_labels(predictions, lower_labels, higher_labels):
 path = input("path:")
 with open(path, "r") as f:
     pred = list(map(int, f.read().rstrip().split("\n")))
+    pred = [item for item in pred]
 with open("data/dev/dev.label", "r") as f:
     data = f.read().rstrip().split("\n")
-    gold = [list(map(int, item.split("\t"))) for item in data]
-    gold = get_gold_labels(pred, [item[0]
-                           for item in gold], [item[1] for item in gold])
+    labels = [list(map(int, item.split("\t"))) for item in data]
+    gold = get_gold_labels(np.array(pred),
+                           np.array([item[0] for item in labels]), np.array([item[1] for item in labels]))
 
-for p, g in zip(pred, gold):
-    if (np.abs(p - g) > 2):
-        print(f"{p}, {g}")
-print(cohen_kappa_score(gold, pred, weights='quadratic'))
+
+print("QWK=", cohen_kappa_score(gold, pred, weights='quadratic'))
 print(classification_report(gold, pred))

@@ -61,7 +61,7 @@ print(device)
 def get_dataset_eval(txts, labels):
     dataset = []
     for txt, label in zip(txts, labels):
-        mydict = tokenizer(txt, max_length=32,
+        mydict = tokenizer(txt, max_length=64,
                            padding="max_length", truncation=True)
         mydict["labels"] = label
         mydict = {key: torch.tensor(value).to(device)
@@ -189,8 +189,7 @@ for i, dev_label in enumerate(dev_labels):
     dev_dataset = get_dataset_eval(dev_txt, dev_label)
     dataloader_val = DataLoader(dev_dataset, batch_size=256, shuffle=False)
 
-    model = Bert4Classification(model_name, num_labels=6, lr=args.lr)
-    model = model.load_from_checkpoint(
+    model = Bert4Classification.load_from_checkpoint(
         path[i], num_labels=6, lr=1e-6, map_location=device)
 
     with torch.no_grad():
